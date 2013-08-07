@@ -1,4 +1,8 @@
 /**
+ * Fork by Matt Rosenberg of "floodling" (see below).
+ * https://github.com/giskard22/floodling
+ * Version from 2013-08-07
+
  * jQuery floodling v1.1.7 https://github.com/hyubs/floodling
  * Written by Hyubs Ursua
  * Copyright (c) 2013
