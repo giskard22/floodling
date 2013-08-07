@@ -7,7 +7,7 @@
  */
 (function( $ ) {
 	$.fn.floodling = function() {
-		var parent, elem, val, names, elemSelector;
+		var parent, elem, val, names, name;
 
 		if(arguments.length == 1) {
 			if((typeof arguments[0] === 'object')&&(!(arguments[0] instanceof Array))) {
@@ -41,99 +41,97 @@
 	};
 	
 	function setValue(parent, elem, val, name) {
+		var tag, type, nameLen, i, cbox, selectVal, ms;
+		
 		if(typeof elem !== 'undefined' && elem.length > 0) {
-			var tag = elem.prop("tagName").toLowerCase();
-			if(tag == 'input') {
-				var type = elem.prop('type').toLowerCase();
-
-				if(type == 'text' || type == 'password') {
-					elem.val(val);
-				}
-				else if(type == 'radio') {
-					parent.find('[name="' + name + '"][value="' + val + '"]').prop("checked", true);
-				}
-				else if(type == 'checkbox') {
-					var nameLen = name.length;
-					if(nameLen > 2 && name.substring(nameLen - 2, nameLen) == '[]') {
-						if(val instanceof Array) {
-							for (var i = 0; i < val.length; i++){
-								var cbox = parent.find('[name="' + name + '"][value="' + val[i] + '"]');
-								if(cbox.prop('checked')) {
-									cbox.prop('checked', false);
+			tag = elem.prop("tagName").toLowerCase();
+			switch (tag) {
+				case 'input':
+					type = elem.prop('type').toLowerCase();
+					
+					switch (type) {
+						case 'radio':
+							parent.find('[name="' + name + '"][value="' + val + '"]').prop("checked", true);
+						break;
+						case 'checkbox':
+							nameLen = name.length;
+							if(nameLen > 2 && name.substring(nameLen - 2, nameLen) == '[]') {
+								if(val instanceof Array) {
+									for (i = 0; i < val.length; i++){
+										cbox = parent.find('[name="' + name + '"][value="' + val[i] + '"]');
+										if(cbox.prop('checked')) {
+											cbox.prop('checked', false);
+										}
+										else {
+											cbox.prop('checked', true);
+										}
+									}
 								}
 								else {
-									cbox.prop('checked', true);
+									cbox = parent.find('[name="' + name + '"][value="' + val + '"]');
+									if(cbox.prop('checked')) {
+										cbox.prop('checked', false);
+									}
+									else {
+										cbox.prop('checked', true);
+									}
+								}					
+							}
+							else {
+								if(val != false) {
+									elem.prop('checked', true);
+								}
+								else {
+									elem.prop('checked', false);
+								}
+							}
+						break;
+						case 'image':
+							elem.prop('src', val);
+						break;
+						default: // text, password, submit, button, reset, date, color, etc.
+							elem.val(val);
+					}
+				break;
+				case 'textarea':
+					elem.val(val);
+				break;
+				case 'select':
+					if(elem.prop('multiple')) {
+						selectVal = elem.val();
+						if(selectVal === null) {
+							selectVal = [];
+						}
+						else if(typeof selectVal === 'string') {
+							selectVal = [selectVal];
+						}
+						if(val instanceof Array) {
+							for (i = 0; i < val.length; i++) {
+								ms = parent.find('[value="' + val[i] + '"]');
+								if(ms.prop('selected')==true){
+									ms.prop('selected', false);
+								}
+								else{
+									ms.prop('selected', true);
 								}
 							}
 						}
 						else {
-							var cbox = parent.find('[name="' + name + '"][value="' + val + '"]');
-							if(cbox.prop('checked')) {
-								cbox.prop('checked', false);
-							}
-							else {
-								cbox.prop('checked', true);
-							}
-						}					
-					}
-					else {
-						if(val != false) {
-							elem.prop('checked', true);
-						}
-						else {
-							elem.prop('checked', false);
-						}
-					}
-				}
-				else if(type == 'image') {
-					elem.prop('src', val);
-				}
-				else { // submit, button, reset, date, color, etc.
-					elem.val(val);
-				}
-			}
-			else if(tag == 'button') {
-				elem.html(val);
-			}
-			else if(tag == 'textarea') {
-				elem.val(val);
-			}
-			else if(tag == 'select') {
-				if(elem.prop('multiple')) {
-					var selectVal = elem.val();
-					if(selectVal === null) {
-						selectVal = [];
-					}
-					else if(typeof selectVal === 'string') {
-						selectVal = [selectVal];
-					}
-					if(val instanceof Array) {
-						for (var i = 0; i < val.length; i++) {
-    						var ms = parent.find('[value="' + val[i] + '"]');
-							if(ms.prop('selected')==true){
+							ms = parent.find('[value="' + val + '"]');
+							if(ms.prop('selected')==true) {
 								ms.prop('selected', false);
 							}
-							else{
+							else {
 								ms.prop('selected', true);
 							}
 						}
 					}
 					else {
-						var ms = parent.find('[value="' + val + '"]');
-						if(ms.prop('selected')==true) {
-							ms.prop('selected', false);
-						}
-						else {
-							ms.prop('selected', true);
-						}
+						elem.val(val);
 					}
-				}
-				else {
-					elem.val(val);
-				}
-			}
-			else {
-				elem.html(val);
+				break;
+				default:
+					elem.html(val);
 			}
 		}
 		else {
