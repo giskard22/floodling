@@ -139,7 +139,7 @@
 			}
 		}
 		else {
-			console.error('Element $("' + elem.selector +'") was not found.');
+			console.log('Element $("' + elem.selector +'") was not found.');
 		}
 	}
 })(jQuery);
