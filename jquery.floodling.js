@@ -38,15 +38,15 @@
 			// Handle PHP-naming for nested values, but only to 1 level
 			if (typeof names[name] === 'object') {
 				for (sub_name in names[name])
-					setValue(parent, findElement(name + '[' + sub_name + ']'), names[name][sub_name], name + '[' + sub_name + ']');
+					setValue(parent, findElement(parent, name + '[' + sub_name + ']'), names[name][sub_name], name + '[' + sub_name + ']');
 			}
 			else {
-				setValue(parent, findElement(name), names[name], name)
+				setValue(parent, findElement(parent, name), names[name], name)
 			}
 		}
 	};
 	
-	function findElement(data_name_string) {
+	function findElement(parent, data_name_string) {
 		var elem;
 		
 		elem = parent.find('[name="' + data_name_string + '"]');
