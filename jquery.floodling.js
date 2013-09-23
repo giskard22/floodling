@@ -1,7 +1,7 @@
 /**
  * Fork by Matt Rosenberg of "floodling" (see below).
  * https://github.com/giskard22/floodling
- * Version from 2013-08-07
+ * Version from 2013-09-23
 
  * jQuery floodling v1.1.7 https://github.com/hyubs/floodling
  * Written by Hyubs Ursua
@@ -11,7 +11,7 @@
  */
 (function( $ ) {
 	$.fn.floodling = function() {
-		var parent, elem, val, names, name;
+		var parent, elem, val, names, name, obj, sub_name;
 
 		if(arguments.length == 1) {
 			if((typeof arguments[0] === 'object')&&(!(arguments[0] instanceof Array))) {
@@ -28,21 +28,34 @@
 			}
 		}
 		else if(arguments.length == 2) {
-			var obj = {};
+			obj = {};
 			obj[arguments[0]] = arguments[1];
 			names = obj;
 			parent = $(this);
-		}		
-
-		for(var name in names) {
-			val = names[name];
-			elem = parent.find('[name="' + name + '"]');
-			if (! elem.length) {
-				elem = parent.find('#' + name);
+		}
+		
+		for(name in names) {
+			// Handle PHP-naming for nested values, but only to 1 level
+			if (typeof names[name] === 'object') {
+				for (sub_name in names[name])
+					setValue(parent, findElement(name + '[' + sub_name + ']'), names[name][sub_name], name + '[' + sub_name + ']');
 			}
-			setValue(parent, elem, val, name);
+			else {
+				setValue(parent, findElement(name), names[name], name)
+			}
 		}
 	};
+	
+	function findElement(data_name_string) {
+		var elem;
+		
+		elem = parent.find('[name="' + data_name_string + '"]');
+		if (! elem.length) {
+			elem = parent.find('#' + data_name_string);
+		}
+		
+		return elem;
+	}
 	
 	function setValue(parent, elem, val, name) {
 		var tag, type, nameLen, i, cbox, selectVal, ms;
@@ -82,7 +95,7 @@
 								}					
 							}
 							else {
-								if(val != false) {
+								if(Boolean(val) != false) { //Must use Boolean() or null would be considered true
 									elem.prop('checked', true);
 								}
 								else {
