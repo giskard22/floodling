@@ -1,7 +1,7 @@
 /**
  * Fork by Matt Rosenberg of "floodling" (see below).
  * https://github.com/giskard22/floodling
- * Version from 2013-09-23
+ * Version from 2014-02-24
 
  * jQuery floodling v1.1.7 https://github.com/hyubs/floodling
  * Written by Hyubs Ursua
@@ -114,45 +114,14 @@
 					elem.val(val);
 				break;
 				case 'select':
-					if(elem.prop('multiple')) {
-						selectVal = elem.val();
-						if(selectVal === null) {
-							selectVal = [];
-						}
-						else if(typeof selectVal === 'string') {
-							selectVal = [selectVal];
-						}
-						if(val instanceof Array) {
-							for (i = 0; i < val.length; i++) {
-								ms = parent.find('[value="' + val[i] + '"]');
-								if(ms.prop('selected')==true){
-									ms.prop('selected', false);
-								}
-								else{
-									ms.prop('selected', true);
-								}
-							}
-						}
-						else {
-							ms = parent.find('[value="' + val + '"]');
-							if(ms.prop('selected')==true) {
-								ms.prop('selected', false);
-							}
-							else {
-								ms.prop('selected', true);
-							}
-						}
-					}
-					else {
-						elem.val(val);
-					}
+					elem.val(val);
 				break;
 				default:
 					elem.html(val);
 			}
 		}
 		else {
-			console.log('Element $("' + elem.selector +'") was not found.');
+			//console.log('Element $("' + elem.selector +'") was not found.');
 		}
 	}
 })(jQuery);
